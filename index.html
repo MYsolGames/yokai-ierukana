@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>妖怪言えるかな？</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin: 0;
+      padding-top: 20px;
+    }
+
+    #top-panel {
+      position: sticky;
+      top: 0;
+      background-color: #f2f2f2;
+      z-index: 10;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+
+    #inputBox {
+      font-size: 1.2em;
+      padding: 10px;
+      width: 300px;
+      margin-top: 10px;
+    }
+
+    #counter, #timer {
+      font-size: 1.1em;
+      color: #333;
+      margin-top: 10px;
+    }
+
+    #giveupButton {
+      margin-top: 10px;
+      padding: 8px 16px;
+      font-size: 1em;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #scroll-area {
+      height: 70vh;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .yokai-slot {
+      background: white;
+      padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      font-size: 1.1em;
+      transition: all 0.3s;
+    }
+
+    .correct {
+      background: #d4edda;
+      border-color: #28a745;
+      color: #155724;
+    }
+
+    .missed {
+      background: #f8d7da;
+      border-color: #dc3545;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="top-panel">
+    <h1>妖怪言えるかな？</h1>
+    <p>全妖怪の名前を入力して、何秒で言えるか挑戦しよう！</p>
+    <div id="timer">経過時間: 0秒</div>
+    <input type="text" id="inputBox" placeholder="妖怪の名前を入力" />
+    <div id="counter">0 / 0体正解！</div>
+    <button id="giveupButton">ギブアップ</button>
+  </div>
+
+  <div id="scroll-area">
+    <div id="grid"></div>
+  </div>
+
+  <script src="yokai-list.js"></script>
+
+  <script>
+    const grid = document.getElementById("grid");
+    const input = document.getElementById("inputBox");
+    const timerDisplay = document.getElementById("timer");
+    const counterDisplay = document.getElementById("counter");
+    const giveupButton = document.getElementById("giveupButton");
+
+    let slotMap = {};
+    let correctCount = 0;
+    let gameStarted = false;
+    let seconds = 0;
+    let timerInterval;
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        seconds++;
+        timerDisplay.textContent = `経過時間: ${seconds}秒`;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      timerDisplay.textContent = `クリア！タイム: ${seconds}秒`;
+      input.disabled = true;
+    }
+
+    function toHiragana(str) {
+      return str.normalize("NFKC")
+        .replace(/[ァ-ン]/g, s => String.fromCharCode(s.charCodeAt(0) - 0x60));
+    }
+
+    function updateCounter() {
+      counterDisplay.textContent = `${correctCount} / ${yokaiData.length}体正解！`;
+    }
+
+    function init() {
+      for (const y of yokaiData) {
+        const div = document.createElement("div");
+        div.textContent = "???";
+        div.classList.add("yokai-slot");
+        grid.appendChild(div);
+
+        const hira = toHiragana(y.yomi || y.name);
+        slotMap[hira] = { name: y.name, element: div };
+      }
+      updateCounter();
+    }
+
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const value = input.value.trim();
+        const hira = toHiragana(value);
+        input.value = "";
+
+        if (!gameStarted) {
+          gameStarted = true;
+          startTimer();
+        }
+
+        if (slotMap[hira]) {
+          const slot = slotMap[hira];
+          const cell = slot.element;
+          if (!cell.classList.contains("correct")) {
+            cell.textContent = slot.name;
+            cell.classList.add("correct");
+            correctCount++;
+            updateCounter();
+            cell.scrollIntoView({ behavior: "smooth", block: "center" });
+
+            if (correctCount === yokaiData.length) {
+              stopTimer();
+              alert(`全問正解！タイムは ${seconds} 秒でした！`);
+            }
+          }
+        }
+      }
+    });
+
+    // ギブアップ処理
+    giveupButton.addEventListener("click", () => {
+      stopTimer();
+      for (const key in slotMap) {
+        const slot = slotMap[key];
+        const cell = slot.element;
+        if (!cell.classList.contains("correct")) {
+          cell.textContent = slot.name;
+          cell.classList.add("missed");
+        }
+      }
+      input.disabled = true;
+    });
+
+    window.addEventListener("keydown", () => input.focus());
+    window.onload = init;
+  </script>
+</body>
+</html>
