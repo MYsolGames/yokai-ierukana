@@ -119,13 +119,17 @@
     function startTimer() {
       timerInterval = setInterval(() => {
         seconds++;
-        timerDisplay.textContent = `経過時間: ${seconds}秒`;
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        timerDisplay.textContent = `経過時間: ${mins}分${secs}秒`;
       }, 1000);
     }
 
     function stopTimer() {
       clearInterval(timerInterval);
-      timerDisplay.textContent = `クリア！タイム: ${seconds}秒`;
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      timerDisplay.textContent = `クリア！タイム: ${mins}分${secs}秒`;
       input.disabled = true;
     }
 
