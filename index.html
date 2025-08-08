@@ -5,34 +5,35 @@
   <title>妖怪言えるかな？</title>
   <style>
     // ChangeLog
-    #changelog details {
-      max-width: 1000px;
-      margin: 10px auto 0;
-      text-align: left;
-    }
-    #changelog summary {
-      display: inline-block;
-      cursor: pointer;
-      padding: 8px 14px;
+    #changelog-btn {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 9999;
+      background: rgba(255, 255, 255, 0.95);
       border: 1px solid #ccc;
       border-radius: 6px;
-      background: #fff;
-      font-weight: 600;
-      user-select: none;
+      padding: 5px 8px;
+      font-size: 0.9em;
     }
-    #changelog .log {
-      margin-top: 12px;
-      padding: 12px;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
+
+    #changelog-btn summary {
+      cursor: pointer;
+      font-weight: bold;
+      list-style: none;
     }
-    #changelog h3 {
-      margin: 10px 0 4px;
-      font-size: 1.1em;
+
+    #changelog-btn .log {
+      margin-top: 5px;
     }
-    #changelog ul {
-      margin: 0 0 8px 18px;
+
+    #changelog-btn h3 {
+      margin: 5px 0 3px;
+      font-size: 1em;
+    }
+
+    #changelog-btn ul {
+      margin: 0 0 5px 18px;
     }
     body {
       font-family: sans-serif;
@@ -119,7 +120,7 @@
 <body>
 
   <div id="top-panel">
-    <h1>妖怪言えるかな？ ver.3.0</h1>
+    <h1>妖怪言えるかな？ ver.3.1</h1>
     <p>全妖怪の名前を入力して、何秒で言えるか挑戦しよう！</p>
     <div id="timer">経過時間: 0秒</div>
     <input type="text" id="inputBox" placeholder="妖怪の名前を入力" />
@@ -127,7 +128,7 @@
     <button id="giveupButton">ギブアップ</button>
   </div>
 
-  <div id="changelog">
+  <div id="changelog-btn">
     <details>
       <summary>更新情報（クリックで開閉）</summary>
       <div class="log">
