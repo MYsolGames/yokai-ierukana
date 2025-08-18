@@ -1,6 +1,6 @@
 const yokaiData = [
   { name: "アチャー", yomi: "あちゃー" },
-  { name: "枕返し", yomi: "まくらがえし" },
+  { name: "枕返し", yomi: "まくらがえし", alias: "Flippit" },
   { name: "ぶようじん坊", yomi: "ぶようじんぼう" },
   { name: "がらあきん坊", yomi: "がらあきんぼう" },
   { name: "さきがけの助", yomi: "さきがけのすけ" },
